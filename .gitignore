@@ -39,3 +39,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.claude/skills/*
+
+# MCP config (contains project refs — keep local)
+.mcp.json
+
+# Playwright screenshots
+.playwright-mcp/

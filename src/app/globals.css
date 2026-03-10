@@ -1,26 +1,66 @@
 @import "tailwindcss";
 
+@theme {
+  --color-bg-base: #0f0f10;
+  --color-bg-sidebar: #141416;
+  --color-bg-elevated: #1a1a1f;
+  --color-bg-bubble-ai: #1a1a28;
+  --color-bg-bubble-user: #4d6bfe;
+  --color-bg-card: #1a1a28;
+  --color-bg-input: #1a1a1f;
+  --color-accent: #4d6bfe;
+  --color-accent-hover: #3d5bee;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #ccccdd;
+  --color-text-muted: #666677;
+  --color-text-placeholder: #555566;
+  --color-border: #2a2a3a;
+  --color-badge-bg: #1a1f3e;
+  --color-badge-text: #7a8fd4;
+  --font-sans: var(--font-inter), Inter, sans-serif;
+}
+
+/* Also expose as CSS custom properties for inline var() usage in components */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-base: #0f0f10;
+  --bg-sidebar: #141416;
+  --bg-elevated: #1a1a1f;
+  --bg-bubble-ai: #1a1a28;
+  --bg-bubble-user: #4d6bfe;
+  --bg-card: #1a1a28;
+  --bg-input: #1a1a1f;
+  --accent: #4d6bfe;
+  --accent-hover: #3d5bee;
+  --text-primary: #ffffff;
+  --text-secondary: #ccccdd;
+  --text-muted: #666677;
+  --text-placeholder: #555566;
+  --border: #2a2a3a;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background-color: #0f0f10;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #0f0f10;
+  color: #ffffff;
+  font-family: var(--font-inter), Inter, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #1a1a1f;
+  border-radius: 2px;
 }
