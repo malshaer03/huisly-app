@@ -1,7 +1,7 @@
 "use client";
 
-import { ArrowUp, Upload } from "lucide-react";
-import { useState } from "react";
+import { ArrowUp, Mic, Plus } from "lucide-react";
+import { useRef, useState } from "react";
 
 interface InputBarProps {
   onSend: (message: string) => void;
@@ -10,12 +10,14 @@ interface InputBarProps {
 
 export function InputBar({ onSend, disabled }: InputBarProps) {
   const [value, setValue] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSend = () => {
     const trimmed = value.trim();
     if (!trimmed || disabled) return;
     onSend(trimmed);
     setValue("");
+    textareaRef.current?.blur();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -26,37 +28,61 @@ export function InputBar({ onSend, disabled }: InputBarProps) {
   };
 
   return (
-    <div className="border-t border-[var(--border)] bg-[var(--bg-base)] py-4 px-4">
-      <div className="w-full max-w-2xl mx-auto flex items-center gap-3 bg-[var(--bg-input)] rounded-xl px-5 py-3">
-        {/* Upload button */}
-        <button
-          className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)] transition-colors flex-shrink-0"
-          type="button"
-          title="Upload document"
-        >
-          <Upload size={16} />
-        </button>
-
-        {/* Input */}
+    <div
+      className="w-full px-4 pt-3 pb-6"
+      style={{
+        background:
+          "linear-gradient(to top, rgba(15,15,16,0.98) 60%, rgba(15,15,16,0.7) 100%)",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
+      }}
+    >
+      <div className="w-full max-w-2xl mx-auto bg-[var(--bg-elevated)] border border-[var(--border)] rounded-2xl px-4 pt-3 pb-3">
+        {/* Textarea */}
         <textarea
+          ref={textareaRef}
           value={value}
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Message Huisly…"
+          placeholder="Reply to Huisly"
           rows={1}
           disabled={disabled}
-          className="flex-1 bg-transparent text-[15px] text-[var(--text-primary)] placeholder-[var(--text-placeholder)] resize-none outline-none leading-relaxed max-h-40 overflow-y-auto"
+          className="w-full bg-transparent text-[16px] text-[var(--text-primary)] placeholder-[var(--text-muted)] resize-none outline-none leading-relaxed max-h-40 overflow-y-auto mb-3"
         />
 
-        {/* Send button */}
-        <button
-          type="button"
-          onClick={handleSend}
-          disabled={!value.trim() || disabled}
-          className="w-10 h-10 rounded-full bg-[var(--accent)] hover:bg-[var(--accent-hover)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex items-center justify-center flex-shrink-0"
-        >
-          <ArrowUp size={16} color="white" strokeWidth={2.5} />
-        </button>
+        {/* Button row */}
+        <div className="flex items-center justify-between">
+          {/* Plus / attach */}
+          <button
+            type="button"
+            title="Attach file"
+            className="w-9 h-9 rounded-full border border-[var(--border)] flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:border-[#3a3a4a] transition-colors"
+          >
+            <Plus size={18} />
+          </button>
+
+          {/* Right actions */}
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              title="Voice input"
+              className="w-9 h-9 rounded-full flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors"
+            >
+              <Mic size={19} />
+            </button>
+
+            {/* Send / waveform */}
+            <button
+              type="button"
+              onClick={handleSend}
+              disabled={disabled}
+              title="Send"
+              className={`w-11 h-11 rounded-full transition-colors flex items-center justify-center ${value.trim() ? "bg-[var(--accent)] hover:bg-[var(--accent-hover)]" : "bg-[#252530] hover:bg-[#2e2e3c] disabled:cursor-not-allowed"}`}
+            >
+              <ArrowUp size={18} color="white" strokeWidth={2.5} />
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -23,23 +23,14 @@ export function MessageBubble({ message }: MessageBubbleProps) {
   const isUser = message.role === "user";
 
   return (
-    <div
-      className={`flex gap-3 w-full ${isUser ? "justify-end" : "justify-start"}`}
-    >
-      {/* AI avatar */}
-      {!isUser && (
-        <div className="w-9 h-9 rounded-full bg-[var(--accent)] flex items-center justify-center flex-shrink-0 mt-0.5">
-          <span className="text-sm font-bold text-white">H</span>
-        </div>
-      )}
-
-      <div className="flex flex-col gap-3 max-w-[580px]">
+    <div className={`flex w-full ${isUser ? "justify-end" : "justify-start"}`}>
+      <div className="flex flex-col gap-3 max-w-[85%] md:max-w-[580px]">
         {/* Text bubble */}
         <div
-          className={`px-4 py-3.5 text-[15px] leading-relaxed ${
+          className={`text-[15px] leading-relaxed ${
             isUser
-              ? "bg-[var(--bg-bubble-user)] text-white rounded-2xl rounded-tr-sm"
-              : "bg-[var(--bg-bubble-ai)] text-[var(--text-secondary)] rounded-2xl rounded-tl-sm"
+              ? "bg-[var(--bg-bubble-user)] text-white rounded-2xl rounded-tr-sm px-4 py-3"
+              : "text-[var(--text-secondary)] py-1"
           }`}
         >
           {message.content}
