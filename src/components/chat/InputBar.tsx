@@ -26,8 +26,8 @@ export function InputBar({ onSend, disabled }: InputBarProps) {
   };
 
   return (
-    <div className="border-t border-[var(--border)] bg-[var(--bg-base)] px-[260px] py-4">
-      <div className="flex items-center gap-3 bg-[var(--bg-input)] rounded-xl px-5 py-3">
+    <div className="border-t border-[var(--border)] bg-[var(--bg-base)] py-4 px-4">
+      <div className="w-full max-w-2xl mx-auto flex items-center gap-3 bg-[var(--bg-input)] rounded-xl px-5 py-3">
         {/* Upload button */}
         <button
           className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)] transition-colors flex-shrink-0"
