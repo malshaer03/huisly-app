@@ -3,6 +3,17 @@
 > Feed this file to Claude Code at the start of every session.
 > It contains all architectural decisions, product logic, and technical choices made during planning.
 
+## Commit Message Rule
+
+**Every commit MUST follow Conventional Commits.** See [`COMMIT_CONVENTION.md`](./COMMIT_CONVENTION.md) for the full spec.
+
+Format: `<type>[optional scope]: <description>`
+Examples: `feat(chat): add streaming endpoint`, `fix(auth): redirect on expired session`, `chore(deps): upgrade drizzle-orm`
+
+Never write a commit message that does not start with a valid type from that file.
+
+**Keep commits small and goal-oriented.** One commit = one logical change. Never bundle unrelated changes. If a task touches multiple concerns (e.g. schema + UI), split into separate commits. Prefer many small commits over one large one.
+
 ---
 
 ## 1. What Is Huisly?
