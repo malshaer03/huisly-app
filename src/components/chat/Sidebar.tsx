@@ -14,8 +14,12 @@ import { useEffect, useRef, useState } from "react";
 import { useChatStore } from "@/lib/store";
 import { supabase } from "@/lib/supabase";
 
-export function Sidebar() {
-  const { history, setActiveChat, newChat, user } = useChatStore();
+interface SidebarProps {
+  onNewChat: () => void;
+}
+
+export function Sidebar({ onNewChat }: SidebarProps) {
+  const { history, setActiveChat, user } = useChatStore();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -57,7 +61,7 @@ export function Sidebar() {
 
         <button
           type="button"
-          onClick={newChat}
+          onClick={onNewChat}
           className="w-full h-9 rounded-full bg-[var(--bg-elevated)] hover:bg-[var(--border)] transition-colors flex items-center gap-2 px-4 text-[13px] font-medium text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
         >
           <Plus size={14} strokeWidth={2.5} />

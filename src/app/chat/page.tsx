@@ -1,5 +1,6 @@
 "use client";
 
+import { useChat } from "@ai-sdk/react";
 import { LoginModal } from "@/components/auth/LoginModal";
 import { ChatWindow } from "@/components/chat/ChatWindow";
 import { Sidebar } from "@/components/chat/Sidebar";
@@ -8,8 +9,15 @@ import { useChatStore } from "@/lib/store";
 
 export default function ChatPage() {
   useAuth();
-  const { sidebarOpen, setSidebarOpen, loginModalOpen, setLoginModalOpen } =
-    useChatStore();
+  const {
+    sidebarOpen,
+    setSidebarOpen,
+    loginModalOpen,
+    setLoginModalOpen,
+    user,
+  } = useChatStore();
+
+  const { messages, status, sendMessage, setMessages } = useChat();
 
   return (
     <div className="flex h-[100dvh] overflow-hidden bg-[var(--bg-base)]">
@@ -31,10 +39,17 @@ export default function ChatPage() {
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         `}
       >
-        <Sidebar />
+        <Sidebar onNewChat={() => setMessages([])} />
       </div>
 
-      <ChatWindow />
+      <ChatWindow
+        messages={messages}
+        status={status}
+        sendMessage={sendMessage}
+        toggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+        user={user}
+        setLoginModalOpen={setLoginModalOpen}
+      />
 
       <LoginModal
         open={loginModalOpen}

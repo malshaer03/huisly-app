@@ -1,28 +1,42 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { useChatStore } from "@/lib/store";
+import type { ChatStatus, UIMessage } from "ai";
+import { useEffect, useRef, useState } from "react";
 import { InputBar } from "./InputBar";
 import { MessageBubble } from "./MessageBubble";
 
-export function ChatWindow() {
-  const {
-    messages,
-    isLoading,
-    toggleSidebar,
-    user,
-    setLoginModalOpen,
-    sendMessage,
-  } = useChatStore();
+interface ChatWindowProps {
+  messages: UIMessage[];
+  status: ChatStatus;
+  sendMessage: (options: { text: string }) => void;
+  toggleSidebar: () => void;
+  user: unknown;
+  setLoginModalOpen: (open: boolean) => void;
+}
+
+export function ChatWindow({
+  messages,
+  status,
+  sendMessage,
+  toggleSidebar,
+  user,
+  setLoginModalOpen,
+}: ChatWindowProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
+  const [inputHeight, setInputHeight] = useState(120);
 
   const messageCount = messages.length;
   const isEmpty = messageCount === 0;
+  const isLoading = status === "submitted" || status === "streaming";
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: scroll to bottom on new message
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messageCount]);
+
+  const handleSend = (content: string) => {
+    sendMessage({ text: content });
+  };
 
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden min-w-0 relative">
@@ -86,22 +100,27 @@ export function ChatWindow() {
           </div>
           <div className="w-full max-w-2xl">
             <InputBar
-              onSend={sendMessage}
+              onSend={handleSend}
               placeholder="e.g. Amsterdam, 2-bed, under €1,400, from April"
               inline
+              disabled={isLoading}
             />
           </div>
         </div>
       ) : (
         <>
           {/* Messages — extends behind floating input */}
-          <div className="flex-1 overflow-y-auto py-6 md:py-10 pb-36">
+          <div
+            className="flex-1 overflow-y-auto py-6 md:py-10"
+            style={{ paddingBottom: inputHeight + 24 }}
+          >
             <div className="w-full max-w-2xl mx-auto px-4 flex flex-col gap-5">
               {messages.map((msg) => (
                 <MessageBubble key={msg.id} message={msg} />
               ))}
 
-              {isLoading && (
+              {/* Show bounce indicator only when request submitted but not yet streaming */}
+              {status === "submitted" && (
                 <div className="flex items-center gap-1.5 py-1">
                   {[0, 1, 2].map((i) => (
                     <div
@@ -119,7 +138,11 @@ export function ChatWindow() {
 
           {/* Input — floating over content */}
           <div className="absolute bottom-0 left-0 right-0 z-10">
-            <InputBar onSend={sendMessage} />
+            <InputBar
+              onSend={handleSend}
+              disabled={isLoading}
+              onHeightChange={setInputHeight}
+            />
           </div>
         </>
       )}

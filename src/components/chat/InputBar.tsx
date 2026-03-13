@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowUp, Mic, Plus } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface InputBarProps {
   onSend: (message: string) => void;
@@ -9,6 +9,8 @@ interface InputBarProps {
   placeholder?: string;
   /** When true, renders without the gradient wrapper (for centered empty state) */
   inline?: boolean;
+  /** Called with the bar's rendered height so parent can offset message list */
+  onHeightChange?: (height: number) => void;
 }
 
 interface InputBoxProps {
@@ -76,15 +78,39 @@ export function InputBar({
   disabled,
   placeholder = "Reply to Huisly",
   inline = false,
+  onHeightChange,
 }: InputBarProps) {
   const [value, setValue] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  // Auto-grow textarea
+  // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally re-run on value change
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${el.scrollHeight}px`;
+  }, [value]);
+
+  // Report wrapper height to parent so it can pad the message list
+  useEffect(() => {
+    if (!onHeightChange || !wrapperRef.current) return;
+    const observer = new ResizeObserver(([entry]) => {
+      onHeightChange(entry.contentRect.height);
+    });
+    observer.observe(wrapperRef.current);
+    return () => observer.disconnect();
+  }, [onHeightChange]);
 
   const handleSend = () => {
     const trimmed = value.trim();
     if (!trimmed || disabled) return;
     onSend(trimmed);
     setValue("");
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+    }
     textareaRef.current?.blur();
   };
 
@@ -111,6 +137,7 @@ export function InputBar({
 
   return (
     <div
+      ref={wrapperRef}
       className="w-full px-4 pt-3 pb-6"
       style={{
         background:
