@@ -130,8 +130,8 @@ html {
 body {
   background-color: #0a0f1e;
   background-image:
-    radial-gradient(circle, rgba(255, 255, 255, 0.085) 1px, transparent 1px),
-    linear-gradient(160deg, #0a0f1e 0%, #000000 65%);
+    radial-gradient(circle, rgba(255, 255, 255, 0.12) 1px, transparent 1px),
+    linear-gradient(160deg, #0b1228 0%, #060816 60%, #000000 100%);
   background-size:
     24px 24px,
     100% 100%;
