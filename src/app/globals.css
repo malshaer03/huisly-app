@@ -6,21 +6,21 @@
 
 /* ─── Huisly design tokens ──────────────────────────────────────── */
 @theme {
-  --color-bg-base: #0f0f10;
-  --color-bg-sidebar: #141416;
-  --color-bg-elevated: #1a1a1f;
-  --color-bg-bubble-ai: #1a1a28;
+  --color-bg-base: transparent;
+  --color-bg-sidebar: #0c1120;
+  --color-bg-elevated: #121a2e;
+  --color-bg-bubble-ai: #0f1a30;
   --color-bg-bubble-user: #4d6bfe;
-  --color-bg-card: #1a1a28;
-  --color-bg-input: #1a1a1f;
+  --color-bg-card: #0f1a30;
+  --color-bg-input: #121a2e;
   --color-accent: #4d6bfe;
   --color-accent-hover: #3d5bee;
   --color-text-primary: #ffffff;
-  --color-text-secondary: #ccccdd;
-  --color-text-muted: #666677;
-  --color-text-placeholder: #555566;
-  --color-border: #2a2a3a;
-  --color-badge-bg: #1a1f3e;
+  --color-text-secondary: #c8d0e8;
+  --color-text-muted: #5a6480;
+  --color-text-placeholder: #4a5470;
+  --color-border: #1e2c46;
+  --color-badge-bg: #0f1a38;
   --color-badge-text: #7a8fd4;
   --font-sans: var(--font-inter), Inter, sans-serif;
 }
@@ -28,45 +28,45 @@
 /* ─── shadcn semantic tokens — dark-only, mapped to Huisly palette ─ */
 :root {
   /* Huisly custom vars */
-  --bg-base: #0f0f10;
-  --bg-sidebar: #141416;
-  --bg-elevated: #1a1a1f;
-  --bg-bubble-ai: #1a1a28;
+  --bg-base: transparent;
+  --bg-sidebar: #0c1120;
+  --bg-elevated: #121a2e;
+  --bg-bubble-ai: #0f1a30;
   --bg-bubble-user: #4d6bfe;
-  --bg-card: #1a1a28;
-  --bg-input: #1a1a1f;
+  --bg-card: #0f1a30;
+  --bg-input: #121a2e;
   --accent-hover: #3d5bee;
   --text-primary: #ffffff;
-  --text-secondary: #ccccdd;
-  --text-muted: #666677;
-  --text-placeholder: #555566;
+  --text-secondary: #c8d0e8;
+  --text-muted: #5a6480;
+  --text-placeholder: #4a5470;
   /* shadcn semantic tokens */
-  --background: #0f0f10;
+  --background: #0a0f1e;
   --foreground: #ffffff;
-  --card: #1a1a28;
+  --card: #0f1a30;
   --card-foreground: #ffffff;
-  --popover: #1a1a1f;
+  --popover: #121a2e;
   --popover-foreground: #ffffff;
   --primary: #4d6bfe;
   --primary-foreground: #ffffff;
-  --secondary: #1a1a1f;
-  --secondary-foreground: #ccccdd;
-  --muted: #1a1a1f;
-  --muted-foreground: #666677;
+  --secondary: #121a2e;
+  --secondary-foreground: #c8d0e8;
+  --muted: #121a2e;
+  --muted-foreground: #5a6480;
   --accent: #4d6bfe;
   --accent-foreground: #ffffff;
   --destructive: oklch(0.704 0.191 22.216);
-  --border: #2a2a3a;
-  --input: #1a1a1f;
+  --border: #1e2c46;
+  --input: #121a2e;
   --ring: #4d6bfe;
   --radius: 0.625rem;
-  --sidebar: #141416;
+  --sidebar: #0c1120;
   --sidebar-foreground: #ffffff;
   --sidebar-primary: #4d6bfe;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #1a1a1f;
-  --sidebar-accent-foreground: #ccccdd;
-  --sidebar-border: #2a2a3a;
+  --sidebar-accent: #121a2e;
+  --sidebar-accent-foreground: #c8d0e8;
+  --sidebar-border: #1e2c46;
   --sidebar-ring: #4d6bfe;
   --chart-1: oklch(0.809 0.105 251.813);
   --chart-2: oklch(0.623 0.214 259.815);
@@ -124,11 +124,18 @@
 }
 
 html {
-  background-color: #0f0f10;
+  background-color: #0a0f1e;
 }
 
 body {
-  background-color: #0f0f10;
+  background-color: #0a0f1e;
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.085) 1px, transparent 1px),
+    linear-gradient(160deg, #0a0f1e 0%, #000000 65%);
+  background-size:
+    24px 24px,
+    100% 100%;
+  background-attachment: fixed;
   color: #ffffff;
   font-family: var(--font-inter), Inter, sans-serif;
   -webkit-font-smoothing: antialiased;
