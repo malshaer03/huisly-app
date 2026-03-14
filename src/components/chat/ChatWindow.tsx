@@ -29,13 +29,20 @@ export function ChatWindow({
   const isEmpty = messageCount === 0;
   const isLoading = status === "submitted" || status === "streaming";
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: scroll to bottom on new message
+  // Scroll to bottom on new message and while streaming content arrives
+  // biome-ignore lint/correctness/useExhaustiveDependencies: intentional — scroll on count or stream
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messageCount]);
+    bottomRef.current?.scrollIntoView({
+      behavior: status === "streaming" ? "instant" : "smooth",
+    });
+  }, [messageCount, status, messages]);
 
   const handleSend = (content: string) => {
     sendMessage({ text: content });
+  };
+
+  const handleApply = (_listingId: string) => {
+    // TODO: wire up to application flow
   };
 
   return (
@@ -116,7 +123,11 @@ export function ChatWindow({
           >
             <div className="w-full max-w-2xl mx-auto px-4 flex flex-col gap-5">
               {messages.map((msg) => (
-                <MessageBubble key={msg.id} message={msg} />
+                <MessageBubble
+                  key={msg.id}
+                  message={msg}
+                  onApply={handleApply}
+                />
               ))}
 
               {/* Show bounce indicator only when request submitted but not yet streaming */}

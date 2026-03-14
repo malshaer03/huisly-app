@@ -1,10 +1,12 @@
 import type { UIMessage } from "ai";
+import { MessageRenderer } from "./MessageRenderer";
 
 interface MessageBubbleProps {
   message: UIMessage;
+  onApply?: (listingId: string) => void;
 }
 
-export function MessageBubble({ message }: MessageBubbleProps) {
+export function MessageBubble({ message, onApply }: MessageBubbleProps) {
   const isUser = message.role === "user";
 
   const text = message.parts
@@ -14,16 +16,16 @@ export function MessageBubble({ message }: MessageBubbleProps) {
 
   return (
     <div className={`flex w-full ${isUser ? "justify-end" : "justify-start"}`}>
-      <div className="flex flex-col gap-3 max-w-[85%] md:max-w-[580px]">
-        <div
-          className={`text-[15px] leading-relaxed ${
-            isUser
-              ? "bg-[var(--bg-bubble-user)] text-white rounded-2xl rounded-tr-sm px-4 py-3"
-              : "text-[var(--text-secondary)] py-1"
-          }`}
-        >
-          {text}
-        </div>
+      <div className="flex flex-col gap-3 max-w-full md:max-w-[580px]">
+        {isUser ? (
+          <div className="text-[15px] leading-relaxed bg-[var(--bg-bubble-user)] text-white rounded-2xl rounded-tr-sm px-4 py-3">
+            {text}
+          </div>
+        ) : (
+          <div className="text-[15px] leading-relaxed text-[var(--text-secondary)] py-1">
+            <MessageRenderer content={text} onApply={onApply} />
+          </div>
+        )}
       </div>
     </div>
   );

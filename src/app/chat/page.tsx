@@ -1,6 +1,8 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
+import { DefaultChatTransport } from "ai";
+import { useMemo } from "react";
 import { LoginModal } from "@/components/auth/LoginModal";
 import { ChatWindow } from "@/components/chat/ChatWindow";
 import { Sidebar } from "@/components/chat/Sidebar";
@@ -17,7 +19,14 @@ export default function ChatPage() {
     user,
   } = useChatStore();
 
-  const { messages, status, sendMessage, setMessages } = useChat();
+  const transport = useMemo(
+    () => new DefaultChatTransport({ api: "/api/chat" }),
+    [],
+  );
+
+  const { messages, status, sendMessage, setMessages } = useChat({
+    transport,
+  });
 
   return (
     <div className="flex h-[100dvh] overflow-hidden bg-[var(--bg-base)]">
