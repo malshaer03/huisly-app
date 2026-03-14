@@ -50,11 +50,13 @@ export function ChatWindow({
       {/* Top bar — glass effect */}
       <div
         className="flex items-center justify-between px-4 py-3 flex-shrink-0 z-10"
-        style={{
-          background: "rgba(15,15,16,0.7)",
-          backdropFilter: "blur(20px)",
-          WebkitBackdropFilter: "blur(20px)",
-        }}
+        style={
+          {
+            // background: "rgba(15,15,16,0.7)",
+            // backdropFilter: "blur(20px)",
+            // WebkitBackdropFilter: "blur(20px)",
+          }
+        }
       >
         {/* Left: sidebar toggle */}
         <button
@@ -64,18 +66,18 @@ export function ChatWindow({
           className="w-10 h-10 rounded-full bg-[var(--bg-elevated)] border border-[var(--border)] flex items-center justify-center text-[var(--text-secondary)] hover:text-white transition-colors flex-shrink-0"
         >
           <svg
-            width="16"
-            height="16"
+            width="20"
+            height="20"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            strokeWidth="2.2"
+            strokeWidth="2"
             strokeLinecap="round"
             aria-hidden="true"
           >
-            <line x1="3" y1="6" x2="21" y2="6" />
-            <line x1="3" y1="12" x2="21" y2="12" />
-            <line x1="3" y1="18" x2="21" y2="18" />
+            <line x1="2" y1="5" x2="18" y2="5" />
+            <line x1="2" y1="12" x2="22" y2="12" />
+            <line x1="2" y1="19" x2="14" y2="19" />
           </svg>
         </button>
 
