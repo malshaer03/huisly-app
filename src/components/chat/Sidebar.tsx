@@ -54,9 +54,9 @@ export function Sidebar({ onNewChat }: SidebarProps) {
       <div className="p-4 flex flex-col gap-4">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-md bg-[var(--accent)] flex items-center justify-center">
-            <span className="text-sm font-bold text-white">H</span>
+            <span className="text-sm font-bold text-white">A</span>
           </div>
-          <span className="text-[18px] font-bold text-white">huisly</span>
+          <span className="text-[18px] font-bold text-white">alless</span>
         </div>
 
         <button

@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alless — Anything, delivered</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #FAF7F2;
+    --warm-white: #FFFDF9;
+    --ink: #1A1612;
+    --ink-muted: #7A6F65;
+    --ink-faint: #C4BAB0;
+    --sage: #6B8C6B;
+    --sage-light: #E8F0E8;
+    --tomato: #C85A3A;
+    --gold: #C9952A;
+    --border: rgba(26,22,18,0.10);
+    --shadow-sm: 0 2px 8px rgba(26,22,18,0.07);
+    --shadow-md: 0 8px 32px rgba(26,22,18,0.10);
+    --shadow-lg: 0 24px 64px rgba(26,22,18,0.13);
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background-color: var(--cream);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Linen texture via SVG noise */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Subtle radial warmth */
+  body::after {
+    content: '';
+    position: fixed;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,149,42,0.07) 0%, transparent 70%);
+    top: -100px; right: -150px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .phone {
+    position: relative;
+    z-index: 1;
+    width: 390px;
+    min-height: 760px;
+    background: var(--warm-white);
+    border-radius: 40px;
+    box-shadow: var(--shadow-lg), 0 0 0 1px var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Subtle paper texture inside card */
+  .phone::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    border-radius: 40px;
+  }
+
+  /* ── Header ── */
+  .header {
+    position: relative;
+    z-index: 1;
+    padding: 20px 24px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-family: 'Lora', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+  }
+
+  .logo span {
+    color: var(--sage);
+  }
+
+  .header-right {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--sage-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: var(--sage);
+    font-weight: 500;
+    border: 1.5px solid rgba(107,140,107,0.2);
+  }
+
+  /* ── Hero area ── */
+  .hero {
+    position: relative;
+    z-index: 1;
+    padding: 40px 28px 28px;
+    text-align: center;
+  }
+
+  .hero-label {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--sage);
+    background: var(--sage-light);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+
+  .hero h1 {
+    font-family: 'Lora', serif;
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.25;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--tomato);
+  }
+
+  .hero p {
+    font-size: 14px;
+    color: var(--ink-muted);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* ── Chat thread ── */
+  .chat {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    padding: 8px 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .bubble {
+    max-width: 82%;
+    padding: 12px 16px;
+    border-radius: 18px;
+    font-size: 14.5px;
+    line-height: 1.5;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .bubble.user {
+    align-self: flex-end;
+    background: var(--ink);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+  }
+
+  .bubble.ai {
+    align-self: flex-start;
+    background: var(--cream);
+    color: var(--ink);
+    border: 1px solid var(--border);
+    border-bottom-left-radius: 4px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .bubble.ai .meta {
+    font-size: 11px;
+    color: var(--ink-muted);
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    margin-bottom: 6px;
+  }
+
+  /* ── Order card ── */
+  .order-card {
+    align-self: flex-start;
+    width: 88%;
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    animation: fadeUp 0.5s ease 0.1s both;
+  }
+
+  .order-header {
+    background: var(--ink);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .order-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .store-dot {
+    width: 28px; height: 28px;
+    background: var(--sage);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+
+  .store-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
+  }
+
+  .store-sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .eta-badge {
+    background: var(--sage);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  .order-items {
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .item-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .item-emoji {
+    font-size: 22px;
+    width: 36px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .item-info { flex: 1; }
+
+  .item-name {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .item-qty {
+    font-size: 11.5px;
+    color: var(--ink-muted);
+    font-weight: 300;
+  }
+
+  .item-price {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 2px 0;
+  }
+
+  .order-total {
+    padding: 12px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--cream);
+    border-top: 1px solid var(--border);
+  }
+
+  .total-label {
+    font-size: 12px;
+    color: var(--ink-muted);
+    font-weight: 400;
+  }
+
+  .total-amount {
+    font-family: 'Lora', serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  /* ── Confirm button ── */
+  .confirm-btn {
+    margin: 0 20px;
+    position: relative;
+    z-index: 1;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    border-radius: 16px;
+    padding: 17px 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    width: calc(100% - 40px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: transform 0.15s, box-shadow 0.15s;
+    animation: fadeUp 0.5s ease 0.2s both;
+  }
+
+  .confirm-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(26,22,18,0.18);
+  }
+
+  .confirm-btn:active { transform: translateY(0); }
+
+  .confirm-btn .btn-left { display: flex; align-items: center; gap: 10px; }
+
+  .confirm-btn .btn-icon {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+  }
+
+  .confirm-btn .btn-price {
+    background: rgba(255,255,255,0.12);
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 14px;
+  }
+
+  /* ── Input area ── */
+  .input-area {
+    position: relative;
+    z-index: 1;
+    padding: 14px 20px 28px;
+  }
+
+  .input-wrap {
+    background: var(--cream);
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 14px 16px 10px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .input-field {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--ink);
+    outline: none;
+    resize: none;
+    line-height: 1.5;
+    min-height: 22px;
+  }
+
+  .input-field::placeholder { color: var(--ink-faint); }
+
+  .input-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+
+  .input-hint {
+    font-size: 11px;
+    color: var(--ink-faint);
+  }
+
+  .input-btns { display: flex; gap: 6px; }
+
+  .btn-round {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    background: var(--warm-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background 0.15s;
+  }
+
+  .btn-round:hover { background: var(--sage-light); }
+
+  .btn-send {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    border: none;
+    background: var(--ink);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.15s;
+  }
+
+  .btn-send:hover { background: var(--tomato); }
+
+  /* ── Delivery strip ── */
+  .delivery-strip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: var(--sage-light);
+    border-radius: 12px;
+    margin: -4px 0 6px;
+    animation: fadeUp 0.5s ease 0.15s both;
+  }
+
+  .delivery-strip .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--sage);
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+
+  .delivery-strip span {
+    font-size: 12px;
+    color: var(--sage);
+    font-weight: 500;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.85); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">all<span>ess</span></div>
+    <div class="header-right">
+      <div class="avatar">M</div>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-label">✦ Groceries</div>
+    <h1>Just say what<br>you <em>need.</em></h1>
+    <p>No lists. No apps. Just type and it's on the way.</p>
+  </div>
+
+  <!-- Chat thread -->
+  <div class="chat">
+    <div class="bubble user" style="animation-delay:0s">
+      I want 2 cucumbers, 3 tomatoes, and a bag of spinach
+    </div>
+
+    <div class="bubble ai" style="animation-delay:0.08s">
+      <div class="meta">✦ Alless</div>
+      Found everything at Albert Heijn. Grabbing the freshest picks for you —
+    </div>
+
+    <!-- Order card -->
+    <div class="order-card">
+      <div class="order-header">
+        <div class="order-header-left">
+          <div class="store-dot">🛒</div>
+          <div>
+            <div class="store-name">Albert Heijn</div>
+            <div class="store-sub">Kinkerstraat · 1.2 km</div>
+          </div>
+        </div>
+        <div class="eta-badge">~24 min</div>
+      </div>
+
+      <div class="order-items">
+        <div class="item-row">
+          <div class="item-emoji">🥒</div>
+          <div class="item-info">
+            <div class="item-name">Komkommer</div>
+            <div class="item-qty">2 stuks · AH Biologisch</div>
+          </div>
+          <div class="item-price">€0.99</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="item-row">
+          <div class="item-emoji">🍅</div>
+          <div class="item-info">
+            <div class="item-name">Trostomaten</div>
+            <div class="item-qty">3 stuks · los</div>
+          </div>
+          <div class="item-price">€1.47</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="item-row">
+          <div class="item-emoji">🥬</div>
+          <div class="item-info">
+            <div class="item-name">Jonge spinazie</div>
+            <div class="item-qty">200g zak</div>
+          </div>
+          <div class="item-price">€1.89</div>
+        </div>
+      </div>
+
+      <div class="order-total">
+        <span class="total-label">Subtotal + delivery (€2.99)</span>
+        <span class="total-amount">€7.34</span>
+      </div>
+    </div>
+
+    <!-- Delivery status -->
+    <div class="delivery-strip">
+      <div class="dot"></div>
+      <span>Confirming stock in real time…</span>
+    </div>
+
+  </div>
+
+  <!-- Confirm CTA -->
+  <button class="confirm-btn">
+    <div class="btn-left">
+      <div class="btn-icon">⚡</div>
+      Order now
+    </div>
+    <div class="btn-price">€7.34</div>
+  </button>
+
+  <!-- Input -->
+  <div class="input-area">
+    <div class="input-wrap">
+      <textarea class="input-field" placeholder="Add something else…" rows="1"></textarea>
+      <div class="input-actions">
+        <span class="input-hint">Deliver to Kinkerstraat 12</span>
+        <div class="input-btns">
+          <div class="btn-round">📎</div>
+          <div class="btn-round">🎙️</div>
+          <div class="btn-send">↑</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Auto-resize textarea
+  const ta = document.querySelector('.input-field');
+  ta.addEventListener('input', () => {
+    ta.style.height = 'auto';
+    ta.style.height = ta.scrollHeight + 'px';
+  });
+</script>
+</body>
+</html>

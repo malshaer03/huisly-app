@@ -76,7 +76,7 @@ const InputBox = ({
 export function InputBar({
   onSend,
   disabled,
-  placeholder = "Reply to Huisly",
+  placeholder = "Reply to Alless",
   inline = false,
   onHeightChange,
 }: InputBarProps) {

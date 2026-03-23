@@ -29,7 +29,7 @@ function sourceLabel(source: string | null): string {
   if (source === "funda") return "Funda";
   if (source === "kamernet") return "Kamernet";
   if (source === "facebook") return "Facebook";
-  if (source === "huisly") return "Huisly";
+  if (source === "alless") return "Alless";
   return source;
 }
 
@@ -50,7 +50,7 @@ export function ListingCard({ data, onApply }: ListingCardProps) {
 
   const gradient = getGradient(id);
   const isFacebook = source === "facebook" || contact_method === "facebook_dm";
-  const isHuisly = source === "huisly";
+  const isAlless = source === "alless";
 
   const formattedDate = available_from
     ? new Date(available_from).toLocaleDateString("en-NL", {
@@ -123,11 +123,11 @@ export function ListingCard({ data, onApply }: ListingCardProps) {
         <div
           className="absolute top-2 left-2 z-10 text-[9px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full"
           style={{
-            background: isHuisly
+            background: isAlless
               ? "rgba(249,115,22,0.25)"
               : "rgba(255,255,255,0.1)",
-            color: isHuisly ? "#fb923c" : "rgba(255,255,255,0.6)",
-            border: isHuisly
+            color: isAlless ? "#fb923c" : "rgba(255,255,255,0.6)",
+            border: isAlless
               ? "1px solid rgba(249,115,22,0.35)"
               : "1px solid rgba(255,255,255,0.1)",
           }}
@@ -243,26 +243,26 @@ export function ListingCard({ data, onApply }: ListingCardProps) {
             onClick={() => onApply?.(id)}
             className="w-full py-1.5 rounded-lg text-[11px] font-semibold transition-colors duration-150"
             style={{
-              background: isHuisly
+              background: isAlless
                 ? "rgba(249,115,22,0.15)"
                 : "rgba(59,126,255,0.15)",
-              border: isHuisly
+              border: isAlless
                 ? "1px solid rgba(249,115,22,0.25)"
                 : "1px solid rgba(59,126,255,0.25)",
-              color: isHuisly ? "#fb923c" : "#6fa3ff",
+              color: isAlless ? "#fb923c" : "#6fa3ff",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = isHuisly
+              e.currentTarget.style.background = isAlless
                 ? "rgba(249,115,22,0.25)"
                 : "rgba(59,126,255,0.25)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = isHuisly
+              e.currentTarget.style.background = isAlless
                 ? "rgba(249,115,22,0.15)"
                 : "rgba(59,126,255,0.15)";
             }}
           >
-            {isHuisly ? "Send Application →" : "Draft Application →"}
+            {isAlless ? "Send Application →" : "Draft Application →"}
           </button>
         )}
       </div>

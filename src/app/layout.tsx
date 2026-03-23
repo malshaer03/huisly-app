@@ -11,8 +11,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Huisly — Just tell us where you want to live",
-  description: "Conversational AI housing agent for the Netherlands",
+  title: "Alless — Anything, delivered",
+  description: "AI-powered shopping assistant for the Netherlands",
 };
 
 export default function RootLayout({
