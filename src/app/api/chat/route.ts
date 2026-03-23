@@ -43,7 +43,7 @@ export async function POST(req: Request) {
   // Claude call — detects housing intent, calls search_listings tool, then responds
   // with render directives embedded in text for frontend to parse into ListingCards
   const result = streamText({
-    model: openai.chat("anthropic/claude-3.5-haiku"),
+    model: openai.chat("openai/gpt-oss-safeguard-20b:nitro"),
     system: SYSTEM_PROMPT,
     messages: modelMessages,
     stopWhen: stepCountIs(2),
