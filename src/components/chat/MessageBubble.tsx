@@ -3,10 +3,9 @@ import { MessageRenderer } from "./MessageRenderer";
 
 interface MessageBubbleProps {
   message: UIMessage;
-  onApply?: (listingId: string) => void;
 }
 
-export function MessageBubble({ message, onApply }: MessageBubbleProps) {
+export function MessageBubble({ message }: MessageBubbleProps) {
   const isUser = message.role === "user";
 
   const text = message.parts
@@ -16,14 +15,14 @@ export function MessageBubble({ message, onApply }: MessageBubbleProps) {
 
   return (
     <div className={`flex w-full ${isUser ? "justify-end" : "justify-start"}`}>
-      <div className="flex flex-col gap-3 max-w-full md:max-w-[580px]">
+      <div className="flex flex-col gap-3 max-w-full md:max-w-[500px]">
         {isUser ? (
           <div className="text-[15px] leading-relaxed bg-[var(--bg-bubble-user)] text-white rounded-2xl rounded-tr-sm px-4 py-3">
             {text}
           </div>
         ) : (
           <div className="text-[15px] leading-relaxed text-[var(--text-secondary)] py-1">
-            <MessageRenderer content={text} onApply={onApply} />
+            <MessageRenderer content={text} />
           </div>
         )}
       </div>

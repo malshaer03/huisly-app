@@ -71,14 +71,13 @@ feat!: change listing schema — removes poster_email field
 
 | Scope | Area |
 |-------|------|
-| `chat` | Chat UI, streaming, message handling |
+| `chat` | Chat widget, streaming, AI tools, message handling |
 | `auth` | Supabase Auth, session, login flow |
 | `db` | Drizzle schema, migrations, queries |
 | `api` | Next.js API routes |
 | `ui` | UI components |
-| `pipeline` | Workers, cron, Apify, Ollama |
-| `email` | Managed email send, Postmark/SendGrid |
-| `push` | Web Push notifications |
+| `sync` | Account sync workers, cron, TrueLayer/Zerion/Binance |
+| `accounts` | Connected accounts management |
 | `payments` | Stripe integration |
 | `deps` | Dependency updates |
 | `config` | Config files, env vars, tooling |

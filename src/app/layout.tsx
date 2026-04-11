@@ -11,8 +11,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Alless — Anything, delivered",
-  description: "AI-powered shopping assistant for the Netherlands",
+  title: "Miru — See all your money in one place",
+  description: "Unified personal finance dashboard with AI chat for EU users",
 };
 
 export default function RootLayout({

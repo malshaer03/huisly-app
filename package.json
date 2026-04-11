@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "biome check",
+    "lint:oxc": "oxlint",
     "format": "biome format --write",
     "prepare": "husky",
     "db:generate": "drizzle-kit generate",
@@ -42,6 +43,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",
+    "oxlint": "latest",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
