@@ -1,6 +1,7 @@
 "use client";
 
 import type { ChatStatus, UIMessage } from "ai";
+import { X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { InputBar } from "./InputBar";
 import { MessageBubble } from "./MessageBubble";
@@ -9,27 +10,22 @@ interface ChatWindowProps {
   messages: UIMessage[];
   status: ChatStatus;
   sendMessage: (options: { text: string }) => void;
-  toggleSidebar: () => void;
-  user: unknown;
-  setLoginModalOpen: (open: boolean) => void;
+  onClose: () => void;
 }
 
 export function ChatWindow({
   messages,
   status,
   sendMessage,
-  toggleSidebar,
-  user,
-  setLoginModalOpen,
+  onClose,
 }: ChatWindowProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
-  const [inputHeight, setInputHeight] = useState(120);
+  const [inputHeight, setInputHeight] = useState(100);
 
   const messageCount = messages.length;
   const isEmpty = messageCount === 0;
   const isLoading = status === "submitted" || status === "streaming";
 
-  // Scroll to bottom on new message and while streaming content arrives
   // biome-ignore lint/correctness/useExhaustiveDependencies: intentional — scroll on count or stream
   useEffect(() => {
     bottomRef.current?.scrollIntoView({
@@ -37,80 +33,43 @@ export function ChatWindow({
     });
   }, [messageCount, status, messages]);
 
-  const handleSend = (content: string) => {
-    sendMessage({ text: content });
-  };
-
-  const handleApply = (_listingId: string) => {
-    // TODO: wire up to application flow
-  };
-
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden min-w-0 relative">
-      {/* Top bar — glass effect */}
-      <div
-        className="flex items-center justify-between px-4 py-3 flex-shrink-0 z-10"
-        style={
-          {
-            // background: "rgba(15,15,16,0.7)",
-            // backdropFilter: "blur(20px)",
-            // WebkitBackdropFilter: "blur(20px)",
-          }
-        }
-      >
-        {/* Left: sidebar toggle */}
+    <div className="flex flex-col h-full overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-3 flex-shrink-0 border-b border-[var(--border)]">
+        <div>
+          <p className="text-[14px] font-semibold text-[var(--text-primary)]">
+            Miru
+          </p>
+          <p className="text-[11px] text-[var(--text-muted)]">
+            Your finance assistant
+          </p>
+        </div>
         <button
           type="button"
-          onClick={toggleSidebar}
-          aria-label="Toggle sidebar"
-          className="w-10 h-10 rounded-full bg-[var(--bg-elevated)] border border-[var(--border)] flex items-center justify-center text-[var(--text-secondary)] hover:text-white transition-colors flex-shrink-0"
+          onClick={onClose}
+          aria-label="Close chat"
+          className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)] transition-colors"
         >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            aria-hidden="true"
-          >
-            <line x1="2" y1="5" x2="18" y2="5" />
-            <line x1="2" y1="12" x2="22" y2="12" />
-            <line x1="2" y1="19" x2="14" y2="19" />
-          </svg>
+          <X size={16} />
         </button>
-
-        {/* Center: spacer */}
-        <div className="flex-1" />
-
-        {/* Right: sign in or avatar */}
-        {!user ? (
-          <button
-            type="button"
-            onClick={() => setLoginModalOpen(true)}
-            className="h-9 px-4 rounded-full bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white text-[13px] font-semibold transition-colors flex-shrink-0"
-          >
-            Sign in
-          </button>
-        ) : null}
       </div>
 
       {isEmpty ? (
-        /* Empty state — input centered */
-        <div className="flex-1 flex flex-col items-center justify-center px-4 pb-16 gap-8">
-          <div className="text-center space-y-2">
-            <h1 className="text-[26px] font-semibold text-[var(--text-primary)] tracking-tight">
-              Where would you like to live?
-            </h1>
-            <p className="text-[15px] text-[var(--text-muted)]">
-              Tell me your city, budget, and move-in date.
+        /* Empty state */
+        <div className="flex-1 flex flex-col items-center justify-center px-4 pb-4 gap-6">
+          <div className="text-center space-y-1">
+            <p className="text-[15px] font-medium text-[var(--text-primary)]">
+              Ask me anything
+            </p>
+            <p className="text-[13px] text-[var(--text-muted)]">
+              Spending, net worth, subscriptions…
             </p>
           </div>
-          <div className="w-full max-w-2xl">
+          <div className="w-full">
             <InputBar
-              onSend={handleSend}
-              placeholder="e.g. Amsterdam, 2-bed, under €1,400, from April"
+              onSend={(text) => sendMessage({ text })}
+              placeholder="e.g. What's my net worth?"
               inline
               disabled={isLoading}
             />
@@ -118,23 +77,18 @@ export function ChatWindow({
         </div>
       ) : (
         <>
-          {/* Messages — extends behind floating input */}
+          {/* Messages */}
           <div
-            className="flex-1 overflow-y-auto py-6 md:py-10"
-            style={{ paddingBottom: inputHeight + 24 }}
+            className="flex-1 overflow-y-auto py-4 px-3"
+            style={{ paddingBottom: inputHeight + 12 }}
           >
-            <div className="w-full max-w-2xl mx-auto px-4 flex flex-col gap-5">
+            <div className="flex flex-col gap-4">
               {messages.map((msg) => (
-                <MessageBubble
-                  key={msg.id}
-                  message={msg}
-                  onApply={handleApply}
-                />
+                <MessageBubble key={msg.id} message={msg} />
               ))}
 
-              {/* Show bounce indicator only when request submitted but not yet streaming */}
               {status === "submitted" && (
-                <div className="flex items-center gap-1.5 py-1">
+                <div className="flex items-center gap-1.5 py-1 px-1">
                   {[0, 1, 2].map((i) => (
                     <div
                       key={i}
@@ -149,10 +103,11 @@ export function ChatWindow({
             </div>
           </div>
 
-          {/* Input — floating over content */}
+          {/* Floating input */}
           <div className="absolute bottom-0 left-0 right-0 z-10">
             <InputBar
-              onSend={handleSend}
+              onSend={(text) => sendMessage({ text })}
+              placeholder="Ask about your finances…"
               disabled={isLoading}
               onHeightChange={setInputHeight}
             />

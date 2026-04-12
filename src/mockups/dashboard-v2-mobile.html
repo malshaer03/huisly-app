@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Miru — Draft 3 (Zerion-inspired)</title>
+<link href="https://fonts.googleapis.com/css2?family=Mona+Sans:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+
+:root {
+  --bg: #161618;
+  --surface: #1e1e21;
+  --surface2: #26262a;
+  --surface3: #2e2e33;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.1);
+  --text: #f2f2f4;
+  --muted: #636369;
+  --muted2: #9393a0;
+  --green: #30d680;
+  --green-dim: rgba(48, 214, 128, 0.12);
+  --red: #ff4d4d;
+  --accent: #fff;
+}
+
+body {
+  background: #111113;
+  color: var(--text);
+  font-family: 'Mona Sans', sans-serif;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.phone {
+  width: 393px;
+  min-height: 100vh;
+  background: var(--bg);
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 100px;
+}
+
+/* ── STATUS BAR ── */
+.statusbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 20px 0;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Geist Mono', monospace;
+  color: var(--muted2);
+}
+
+/* ── HEADER ── */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 20px 0;
+}
+
+.wordmark {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  color: var(--text);
+}
+
+.header-icons {
+  display: flex;
+  gap: 8px;
+}
+
+.hicon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  cursor: pointer;
+  transition: background 0.2s;
+  position: relative;
+}
+
+.hicon:hover { background: var(--surface2); }
+
+.hicon-dot::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 7px;
+  height: 7px;
+  background: #ff4444;
+  border-radius: 50%;
+  border: 1.5px solid var(--bg);
+}
+
+/* ── PORTFOLIO HERO ── */
+.hero {
+  margin: 24px 20px 0;
+  background: var(--surface);
+  border-radius: 22px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  animation: fadeUp 0.45s ease both;
+}
+
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--muted2);
+  font-weight: 500;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.hero-eyebrow-arrow {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+/* Zerion-style decimal fade */
+.hero-number {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  margin-bottom: 8px;
+}
+
+.hero-currency {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+  margin-right: 2px;
+  font-family: 'Geist Mono', monospace;
+}
+
+.hero-main {
+  font-size: 44px;
+  font-weight: 800;
+  letter-spacing: -2px;
+  color: var(--text);
+  font-family: 'Geist Mono', monospace;
+  line-height: 1;
+}
+
+.hero-decimal {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--muted);
+  font-family: 'Geist Mono', monospace;
+  letter-spacing: -1px;
+}
+
+.hero-change {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--green);
+}
+
+.hero-change-sub {
+  color: var(--muted2);
+  font-weight: 400;
+}
+
+/* Hide balance toggle */
+.hide-btn {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+/* ── ACTION PILLS ── */
+.actions {
+  display: flex;
+  gap: 8px;
+  margin: 14px 20px 0;
+  animation: fadeUp 0.45s 0.08s ease both;
+}
+
+.action-pill {
+  flex: 1;
+  height: 44px;
+  border-radius: 22px;
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.action-pill:active { transform: scale(0.96); }
+.action-pill:hover { background: var(--surface2); }
+
+.action-pill.primary {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+
+.action-pill.primary:hover { background: rgba(242,242,244,0.9); }
+
+.pill-icon { font-size: 15px; }
+
+/* ── SECTION HEADER ── */
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 20px 12px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.3px;
+}
+
+.section-actions {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.section-icon-btn {
+  color: var(--muted2);
+  font-size: 18px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.section-icon-btn:hover { color: var(--text); }
+
+/* ── ACCOUNT ROWS (Zerion wallet list style) ── */
+.account-rows {
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: fadeUp 0.45s 0.12s ease both;
+}
+
+.account-row {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+
+.account-row:active { transform: scale(0.99); }
+.account-row:hover { background: var(--surface2); }
+
+/* Subtle left glow on hover */
+.account-row::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: 18px 0 0 18px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.account-row:hover::before { opacity: 1; }
+
+.row-ing::before { background: #ff6200; }
+.row-metamask::before { background: #f5841f; }
+.row-revolut::before { background: #7c6dfa; }
+.row-binance::before { background: #f3ba2f; }
+
+.row-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* Chain badge like Zerion */
+.chain-badge {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  background: var(--surface);
+  border: 1.5px solid var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+}
+
+.row-info { flex: 1; min-width: 0; }
+
+.row-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.row-sub {
+  font-size: 12px;
+  color: var(--muted2);
+  font-weight: 400;
+}
+
+.row-right {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Zerion decimal fade on row balances */
+.row-balance {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 0;
+  margin-bottom: 3px;
+}
+
+.row-bal-main {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  font-family: 'Geist Mono', monospace;
+  letter-spacing: -0.5px;
+}
+
+.row-bal-dec {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  font-family: 'Geist Mono', monospace;
+}
+
+.row-change {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.up { color: var(--green); }
+.flat { color: var(--muted2); }
+.down { color: var(--red); }
+
+.row-arrow {
+  margin-left: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* See all button */
+.see-all-btn {
+  margin: 10px 20px 0;
+  height: 44px;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted2);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.see-all-btn:hover { background: var(--surface2); }
+
+/* ── SPENDING SECTION ── */
+.spending-section {
+  animation: fadeUp 0.45s 0.2s ease both;
+}
+
+.spend-card {
+  margin: 0 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  overflow: hidden;
+}
+
+.spend-top {
+  padding: 18px 18px 14px;
+}
+
+.spend-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.spend-left {}
+
+.spend-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.spend-cycle {
+  font-size: 11px;
+  color: var(--muted2);
+  font-weight: 400;
+}
+
+.spend-right { text-align: right; }
+
+.spend-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 0;
+}
+
+.spend-main {
+  font-size: 20px;
+  font-weight: 800;
+  font-family: 'Geist Mono', monospace;
+  letter-spacing: -0.5px;
+}
+
+.spend-dec {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  font-family: 'Geist Mono', monospace;
+}
+
+.spend-budget-label {
+  font-size: 11px;
+  color: var(--muted2);
+  margin-top: 2px;
+}
+
+/* Segmented track */
+.seg-track {
+  height: 6px;
+  border-radius: 10px;
+  background: var(--surface2);
+  display: flex;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.seg { height: 100%; border-radius: 10px; }
+
+/* Spend rows */
+.spend-rows { padding: 0; }
+
+.spend-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 18px;
+  border-top: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.spend-row:hover { background: var(--surface2); }
+
+.spend-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--surface2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.spend-info { flex: 1; }
+
+.spend-name {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
+.spend-bar-wrap {
+  height: 3px;
+  background: var(--surface2);
+  border-radius: 10px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.spend-bar { height: 100%; border-radius: 10px; }
+
+.spend-amount {
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'Geist Mono', monospace;
+  letter-spacing: -0.3px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Summary bar */
+.summary-bar {
+  display: flex;
+  border-top: 1px solid var(--border);
+}
+
+.sum-item {
+  flex: 1;
+  padding: 14px 12px;
+  text-align: center;
+  border-right: 1px solid var(--border);
+}
+
+.sum-item:last-child { border-right: none; }
+
+.sum-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.sum-val {
+  font-size: 17px;
+  font-weight: 800;
+  font-family: 'Geist Mono', monospace;
+  letter-spacing: -0.5px;
+}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  width: 393px;
+  background: rgba(22, 22, 24, 0.94);
+  backdrop-filter: blur(24px);
+  border-top: 1px solid var(--border2);
+  padding: 12px 0 28px;
+  display: flex;
+  justify-content: space-around;
+  z-index: 100;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  opacity: 0.35;
+  transition: opacity 0.2s;
+}
+
+.nav-item.active { opacity: 1; }
+
+.nav-icon-wrap {
+  width: 44px;
+  height: 28px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+  transition: background 0.2s;
+}
+
+.nav-item.active .nav-icon-wrap {
+  background: var(--surface2);
+}
+
+.nav-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* ── FAB ── */
+.fab {
+  position: fixed;
+  bottom: 92px;
+  right: calc(50% - 196px + 16px);
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: var(--green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 6px 28px rgba(48, 214, 128, 0.35);
+  z-index: 200;
+  transition: transform 0.2s, box-shadow 0.2s;
+  animation: fabPop 0.5s 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+.fab:hover {
+  transform: scale(1.07);
+  box-shadow: 0 10px 36px rgba(48, 214, 128, 0.45);
+}
+
+.fab:active { transform: scale(0.93); }
+.fab-icon { font-size: 22px; color: var(--bg); font-weight: 800; }
+
+/* ── CHAT ── */
+.chat-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 393px;
+  height: 0;
+  background: var(--surface);
+  border-radius: 24px 24px 0 0;
+  border: 1px solid var(--border2);
+  border-bottom: none;
+  z-index: 300;
+  overflow: hidden;
+  transition: height 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-sheet.open { height: 72%; }
+
+.drag-bar {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--surface3);
+  margin: 12px auto 0;
+  flex-shrink: 0;
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.chat-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: var(--green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: var(--bg);
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.chat-info { flex: 1; }
+
+.chat-name {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 1px;
+}
+
+.chat-status {
+  font-size: 11px;
+  color: var(--green);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.status-blink {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: blink 2s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.chat-close {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--surface2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--muted2);
+  border: 1px solid var(--border);
+}
+
+.chat-msgs {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  scrollbar-width: none;
+}
+
+.chat-msgs::-webkit-scrollbar { display: none; }
+
+.msg { display: flex; flex-direction: column; }
+.msg.user { align-items: flex-end; }
+
+.msg-time {
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 4px;
+  padding: 0 4px;
+}
+
+.bubble {
+  max-width: 80%;
+  padding: 10px 14px;
+  font-size: 13px;
+  line-height: 1.55;
+  border-radius: 16px;
+}
+
+.msg.ai .bubble {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-bottom-left-radius: 4px;
+}
+
+.msg.user .bubble {
+  background: var(--green);
+  color: var(--bg);
+  font-weight: 500;
+  border-bottom-right-radius: 4px;
+}
+
+.green-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--green-dim);
+  border: 1px solid rgba(48,214,128,0.2);
+  border-radius: 20px;
+  padding: 3px 9px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--green);
+  margin-top: 6px;
+}
+
+.chips {
+  padding: 8px 18px;
+  display: flex;
+  gap: 7px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex-shrink: 0;
+}
+
+.chips::-webkit-scrollbar { display: none; }
+
+.chip {
+  flex-shrink: 0;
+  padding: 7px 13px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted2);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.18s;
+}
+
+.chip:hover {
+  background: var(--green);
+  color: var(--bg);
+  border-color: var(--green);
+}
+
+.input-row {
+  display: flex;
+  gap: 8px;
+  padding: 10px 16px 28px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.chat-input {
+  flex: 1;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--text);
+  font-family: 'Mona Sans', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.chat-input:focus { border-color: var(--green); }
+.chat-input::placeholder { color: var(--muted); }
+
+.send-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 13px;
+  background: var(--green);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 17px;
+  color: var(--bg);
+  font-weight: 800;
+  flex-shrink: 0;
+  transition: transform 0.15s;
+}
+
+.send-btn:active { transform: scale(0.9); }
+
+/* Backdrop */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(8px);
+  z-index: 250;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  width: 393px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.backdrop.show { opacity: 1; pointer-events: all; }
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fabPop {
+  from { opacity: 0; transform: scale(0.5); }
+  to { opacity: 1; transform: scale(1); }
+}
+</style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="wordmark">miru</div>
+    <div class="header-icons">
+      <div class="hicon">🔍</div>
+      <div class="hicon">⊡</div>
+      <div class="hicon hicon-dot">⚙️</div>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-eyebrow">
+      Total Portfolio <span class="hero-eyebrow-arrow">›</span>
+    </div>
+    <div class="hero-number">
+      <span class="hero-currency">$</span>
+      <span class="hero-main">36,285</span>
+      <span class="hero-decimal">.13</span>
+      <span class="hide-btn">👁</span>
+    </div>
+    <div class="hero-change">
+      <span>+2.4%</span>
+      <span class="hero-change-sub">(+$834.20) Today</span>
+    </div>
+  </div>
+
+
+  <!-- Accounts -->
+  <div class="section-head">
+    <div class="section-title">My Accounts</div>
+    <div class="section-actions">
+      <span class="section-icon-btn">✎</span>
+      <span class="section-icon-btn">+</span>
+    </div>
+  </div>
+
+  <div class="account-rows">
+
+    <!-- ING -->
+    <div class="account-row row-ing">
+      <div class="row-avatar" style="background:rgba(255,98,0,0.12);">
+        🏦
+        <div class="chain-badge" style="background:#ff6200;color:white;font-weight:700;">€</div>
+      </div>
+      <div class="row-info">
+        <div class="row-name">ING Bank</div>
+        <div class="row-sub">Checking · Auto-synced</div>
+      </div>
+      <div class="row-right">
+        <div class="row-balance">
+          <span class="row-bal-main">€10,871</span>
+          <span class="row-bal-dec">.41</span>
+        </div>
+        <div class="row-change flat">No change</div>
+      </div>
+      <span class="row-arrow">›</span>
+    </div>
+
+    <!-- MetaMask -->
+    <div class="account-row row-metamask">
+      <div class="row-avatar" style="background:rgba(245,132,31,0.12);">
+        🦊
+        <div class="chain-badge" style="background:#627eea;color:white;font-size:8px;font-weight:700;">Ξ</div>
+      </div>
+      <div class="row-info">
+        <div class="row-name">Eth · MetaMask</div>
+        <div class="row-sub">0x3f2a…b4d1 · Zerion</div>
+      </div>
+      <div class="row-right">
+        <div class="row-balance">
+          <span class="row-bal-main">$14,375</span>
+          <span class="row-bal-dec">.00</span>
+        </div>
+        <div class="row-change up">+4.10%</div>
+      </div>
+      <span class="row-arrow">›</span>
+    </div>
+
+    <!-- Revolut -->
+    <div class="account-row row-revolut">
+      <div class="row-avatar" style="background:rgba(124,109,250,0.12);">
+        💳
+        <div class="chain-badge" style="background:#7c6dfa;color:white;font-weight:700;">€</div>
+      </div>
+      <div class="row-info">
+        <div class="row-name">Revolut</div>
+        <div class="row-sub">Current · Auto-synced</div>
+      </div>
+      <div class="row-right">
+        <div class="row-balance">
+          <span class="row-bal-main">€193</span>
+          <span class="row-bal-dec">.27</span>
+        </div>
+        <div class="row-change down">−1.20%</div>
+      </div>
+      <span class="row-arrow">›</span>
+    </div>
+
+    <!-- Binance -->
+    <div class="account-row row-binance">
+      <div class="row-avatar" style="background:rgba(243,186,47,0.12);">
+        ⬡
+        <div class="chain-badge" style="background:#f3ba2f;color:#1a1814;font-size:8px;font-weight:800;">B</div>
+      </div>
+      <div class="row-info">
+        <div class="row-name">Binance</div>
+        <div class="row-sub">CEX · Read-only API</div>
+      </div>
+      <div class="row-right">
+        <div class="row-balance">
+          <span class="row-bal-main">$1,949</span>
+          <span class="row-bal-dec">.00</span>
+        </div>
+        <div class="row-change up">+2.80%</div>
+      </div>
+      <span class="row-arrow">›</span>
+    </div>
+
+  </div>
+
+  <!-- See all -->
+  <div class="see-all-btn">See All Accounts</div>
+
+  <!-- Spending -->
+  <div class="spending-section">
+    <div class="section-head">
+      <div class="section-title">This Pay Cycle</div>
+      <div class="section-actions">
+        <span style="font-size:11px;color:var(--muted2);font-weight:600;">Mar 25 – Apr 24</span>
+      </div>
+    </div>
+
+    <div class="spend-card">
+      <div class="spend-top">
+        <div class="spend-meta">
+          <div class="spend-left">
+            <div class="spend-title">Spending</div>
+            <div class="spend-cycle">Resets on your salary date · 18 days left</div>
+          </div>
+          <div class="spend-right">
+            <div class="spend-total">
+              <span class="spend-main">€1,243</span>
+              <span class="spend-dec">.00</span>
+            </div>
+            <div class="spend-budget-label">of €2,000</div>
+          </div>
+        </div>
+
+        <div class="seg-track">
+          <div class="seg" style="width:25%;background:#ff4d4d;border-radius:10px 0 0 10px;"></div>
+          <div class="seg" style="width:2px;background:var(--surface);"></div>
+          <div class="seg" style="width:15%;background:#f5c542;"></div>
+          <div class="seg" style="width:2px;background:var(--surface);"></div>
+          <div class="seg" style="width:13%;background:#7c6dfa;"></div>
+          <div class="seg" style="width:2px;background:var(--surface);"></div>
+          <div class="seg" style="width:7%;background:#30d680;border-radius:0 10px 10px 0;"></div>
+        </div>
+      </div>
+
+      <div class="spend-rows">
+
+        <div class="spend-row">
+          <div class="spend-icon">🍔</div>
+          <div class="spend-info">
+            <div class="spend-name">Food & Dining</div>
+            <div class="spend-bar-wrap">
+              <div class="spend-bar" style="width:78%;background:#ff4d4d;"></div>
+            </div>
+          </div>
+          <div class="spend-amount" style="color:#ff4d4d">€312</div>
+        </div>
+
+        <div class="spend-row">
+          <div class="spend-icon">🚇</div>
+          <div class="spend-info">
+            <div class="spend-name">Transport</div>
+            <div class="spend-bar-wrap">
+              <div class="spend-bar" style="width:47%;background:#f5c542;"></div>
+            </div>
+          </div>
+          <div class="spend-amount" style="color:#f5c542">€187</div>
+        </div>
+
+        <div class="spend-row">
+          <div class="spend-icon">🛒</div>
+          <div class="spend-info">
+            <div class="spend-name">Groceries</div>
+            <div class="spend-bar-wrap">
+              <div class="spend-bar" style="width:39%;background:#7c6dfa;"></div>
+            </div>
+          </div>
+          <div class="spend-amount" style="color:#7c6dfa">€156</div>
+        </div>
+
+        <div class="spend-row">
+          <div class="spend-icon">📱</div>
+          <div class="spend-info">
+            <div class="spend-name">Subscriptions</div>
+            <div class="spend-bar-wrap">
+              <div class="spend-bar" style="width:22%;background:#30d680;"></div>
+            </div>
+          </div>
+          <div class="spend-amount" style="color:#30d680">€89</div>
+        </div>
+
+      </div>
+
+      <div class="summary-bar">
+        <div class="sum-item">
+          <div class="sum-label">Spent</div>
+          <div class="sum-val" style="color:#ff4d4d">€1,243</div>
+        </div>
+        <div class="sum-item">
+          <div class="sum-label">Budget</div>
+          <div class="sum-val">€2,000</div>
+        </div>
+        <div class="sum-item">
+          <div class="sum-label">Left</div>
+          <div class="sum-val" style="color:#30d680">€757</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Backdrop -->
+<div class="backdrop" id="backdrop" onclick="closeChat()"></div>
+
+<!-- FAB -->
+<div class="fab" id="fab" onclick="openChat()">
+  <div class="fab-icon">✦</div>
+</div>
+
+<!-- Chat sheet -->
+<div class="chat-sheet" id="chatSheet">
+  <div class="drag-bar"></div>
+
+  <div class="chat-header">
+    <div class="chat-avatar">✦</div>
+    <div class="chat-info">
+      <div class="chat-name">Miru AI</div>
+      <div class="chat-status">
+        <div class="status-blink"></div>
+        Watching your money
+      </div>
+    </div>
+    <div class="chat-close" onclick="closeChat()">✕</div>
+  </div>
+
+  <div class="chat-msgs" id="chatMsgs">
+    <div class="msg ai">
+      <div class="msg-time">just now</div>
+      <div class="bubble">Hey! Portfolio is up $834 today 📈 — ETH leading the charge. 18 days left in your pay cycle and you're on track. What do you want to know?</div>
+      <div class="green-tag">↑ ETH +4.1% · MetaMask</div>
+    </div>
+
+    <div class="msg user">
+      <div class="bubble">How much did I spend on eating out?</div>
+    </div>
+
+    <div class="msg ai">
+      <div class="msg-time">just now</div>
+      <div class="bubble">€312 on food & dining this cycle — 23 transactions, €48 more than last cycle. Top spots: Albert Heijn €89, Thuisbezorgd €67, Starbucks €44.</div>
+    </div>
+  </div>
+
+  <div class="chips">
+    <div class="chip" onclick="qa('Am I on track?')">On track? 📊</div>
+    <div class="chip" onclick="qa('My subscriptions')">Subscriptions 📱</div>
+    <div class="chip" onclick="qa('Crypto portfolio')">Crypto 🔗</div>
+    <div class="chip" onclick="qa('Net worth breakdown')">Net worth 💰</div>
+    <div class="chip" onclick="qa('Biggest expense')">Top expense 💸</div>
+  </div>
+
+  <div class="input-row">
+    <input class="chat-input" id="chatInput" placeholder="Ask anything about your money…"/>
+    <button class="send-btn" onclick="send()">↑</button>
+  </div>
+</div>
+
+<!-- Bottom nav -->
+<div class="bottom-nav">
+  <div class="nav-item active">
+    <div class="nav-icon-wrap">🏠</div>
+    <div class="nav-label">Home</div>
+  </div>
+  <div class="nav-item">
+    <div class="nav-icon-wrap">👥</div>
+    <div class="nav-label">Following</div>
+  </div>
+  <div class="nav-item">
+    <div class="nav-icon-wrap">↻</div>
+    <div class="nav-label">Swap</div>
+  </div>
+  <div class="nav-item">
+    <div class="nav-icon-wrap">◈</div>
+    <div class="nav-label">Rewards</div>
+  </div>
+  <div class="nav-item">
+    <div class="nav-icon-wrap">🔍</div>
+    <div class="nav-label">Explore</div>
+  </div>
+</div>
+
+<script>
+const sheet = document.getElementById('chatSheet');
+const backdrop = document.getElementById('backdrop');
+const fab = document.getElementById('fab');
+
+function openChat() {
+  sheet.classList.add('open');
+  backdrop.classList.add('show');
+  fab.style.display = 'none';
+}
+
+function closeChat() {
+  sheet.classList.remove('open');
+  backdrop.classList.remove('show');
+  fab.style.display = 'flex';
+}
+
+function qa(text) {
+  addU(text);
+  setTimeout(() => {
+    if (text.includes('track')) addA("62% of your €2,000 budget used with 18 days left. On current pace: ~€1,900. You're good 🎯");
+    else if (text.includes('ubscription')) addA("8 subscriptions totalling €143/month. Top: Claude €18, Netflix €17.99, Spotify €9.99. Duolingo unused 47 days 👀");
+    else if (text.includes('rypto') || text.includes('Crypto')) addA("Portfolio: $16,324 today. MetaMask +4.1%, Binance +2.8%. Week gain: +$640 📈");
+    else if (text.includes('worth')) addA("Total: $36,285.13 — ING + Revolut + MetaMask + Binance. Up $834 today ✦");
+    else if (text.includes('expense')) addA("Biggest: Food & Dining €312, Transport €187. Want a deeper breakdown?");
+    else addA("Checking across all your accounts… ✦");
+  }, 650);
+}
+
+function send() {
+  const input = document.getElementById('chatInput');
+  const t = input.value.trim();
+  if (!t) return;
+  qa(t);
+  input.value = '';
+}
+
+function addU(text) {
+  const el = document.getElementById('chatMsgs');
+  const d = document.createElement('div');
+  d.className = 'msg user';
+  d.innerHTML = `<div class="bubble">${text}</div>`;
+  el.appendChild(d);
+  el.scrollTop = el.scrollHeight;
+}
+
+function addA(text) {
+  const el = document.getElementById('chatMsgs');
+  const d = document.createElement('div');
+  d.className = 'msg ai';
+  d.innerHTML = `<div class="msg-time">just now</div><div class="bubble">${text}</div>`;
+  el.appendChild(d);
+  el.scrollTop = el.scrollHeight;
+}
+
+document.getElementById('chatInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') send();
+});
+</script>
+</body>
+</html>

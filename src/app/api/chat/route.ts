@@ -1,29 +1,19 @@
 import { createOpenAI } from "@ai-sdk/openai";
 import { convertToModelMessages, stepCountIs, streamText, tool } from "ai";
+import { and, desc, eq, gte, lte } from "drizzle-orm";
 import { z } from "zod";
-import { formatListingsForAI, searchListings } from "@/lib/db";
+import { db } from "@/db";
+import { netWorthSnapshots, subscriptions, transactions } from "@/db/schema";
 
-const SYSTEM_PROMPT = `You are Huisly, a conversational housing agent for the Netherlands.
-Help users find rental housing. Ask about city, budget, move date, and preferences.
-Keep responses concise and warm. Respond in plain text only (no markdown).
+const SYSTEM_PROMPT = `You are Miru, a personal finance AI assistant.
+You have access to the user's financial data: bank accounts, crypto wallets, CEX holdings, transactions, and subscriptions.
+Answer questions about their money clearly and concisely. Use plain text only (no markdown).
 
-RENDER DIRECTIVES:
-When showing listings, embed render directives inline in your message.
-Format: render/{"type":"listing","data":{...}}
-Each directive must be on its own line.
-Always include: id, price, city, size_m2, furnished, available_from, room_type, source, contact_method, post_url
-Example response format:
-"I found 2 matches in Amsterdam under €1,000:
-render/{"type":"listing","data":{"id":"1","price":950,"city":"Amsterdam","size_m2":32,"furnished":true,"available_from":"2025-04-01","room_type":"studio","source":"pararius","contact_method":"email","post_url":"https://pararius.nl/..."}}
-render/{"type":"listing","data":{"id":"2","price":980,"city":"Amsterdam","size_m2":28,"furnished":false,"available_from":"2025-03-15","room_type":"room","source":"facebook","contact_method":"facebook_dm","post_url":"https://facebook.com/..."}}
-Want me to narrow it down or send an application?"
-IMPORTANT:
-- Never make up listing data — only use what the tool result provides
-- If no listings found, say so warmly and suggest broadening the search
-- Always end with a follow-up question`;
+When you need data, call the appropriate tool. Never invent numbers — only report what the tools return.
+If data is unavailable, say so honestly and suggest connecting an account.`;
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
+  const { messages, userId } = await req.json();
 
   const apiKey = process.env.AI_API_KEY;
   if (!apiKey) {
@@ -40,58 +30,209 @@ export async function POST(req: Request) {
 
   const modelMessages = await convertToModelMessages(messages);
 
-  // Claude call — detects housing intent, calls search_listings tool, then responds
-  // with render directives embedded in text for frontend to parse into ListingCards
   const result = streamText({
-    model: openai.chat("anthropic/claude-3.5-haiku"),
+    model: openai.chat("qwen/qwen3.6-plus"),
     system: SYSTEM_PROMPT,
     messages: modelMessages,
-    stopWhen: stepCountIs(2),
+    stopWhen: stepCountIs(5),
     tools: {
-      search_listings: tool({
-        description: `Search for housing listings in the Netherlands.
-Call this tool ONLY when the user is actively requesting a new search or changing their search criteria.
-
-CALL when the user:
-- Describes where they want to live ("amsterdam", "looking in rotterdam")
-- States a budget ("under 1k", "around €900", "max 1500")
-- Asks to see listings ("show me", "find me", "what's available")
-- Changes criteria ("actually make it €1200", "try utrecht instead")
-
-DO NOT call when the user:
-- Responds to listings already shown ("okay", "sounds good", "thanks")
-- Asks a follow-up about a specific listing ("tell me more about the first one")
-- Greets or makes small talk ("hi", "hello", "that's helpful")
-- Confirms or declines a suggestion without new criteria`,
+      get_transactions: tool({
+        description:
+          "Query the user's transactions. Use when the user asks about spending, income, or specific merchants.",
         inputSchema: z.object({
-          city: z
+          category: z
             .string()
             .optional()
-            .describe("City or area name e.g. Amsterdam, Utrecht, Rotterdam"),
-          budget_max: z
-            .number()
-            .optional()
-            .describe("Maximum monthly rent in EUR"),
-          room_type: z
-            .enum(["room", "studio", "apartment", "house"])
-            .optional()
-            .describe("Type of accommodation"),
-          furnished: z
-            .boolean()
-            .optional()
-            .describe("true = furnished only, false = unfurnished only"),
-          min_size_m2: z
-            .number()
-            .optional()
-            .describe("Minimum size in square meters"),
-          move_date: z
+            .describe(
+              "Filter by category e.g. food, transport, salary, subscription",
+            ),
+          merchant_name: z
             .string()
             .optional()
-            .describe("Move-in date ISO format YYYY-MM-DD"),
+            .describe("Filter by merchant name (partial match)"),
+          date_from: z
+            .string()
+            .optional()
+            .describe("Start date ISO format YYYY-MM-DD"),
+          date_to: z
+            .string()
+            .optional()
+            .describe("End date ISO format YYYY-MM-DD"),
+          transaction_type: z
+            .enum(["debit", "credit", "transfer"])
+            .optional()
+            .describe("Filter by transaction type"),
         }),
-        execute: async (params) => {
-          const listings = await searchListings(params);
-          return formatListingsForAI(listings);
+        execute: async ({
+          category,
+          merchant_name,
+          date_from,
+          date_to,
+          transaction_type,
+        }) => {
+          if (!userId) return { error: "Not authenticated" };
+
+          try {
+            const filters = [eq(transactions.userId, userId)];
+            if (category) filters.push(eq(transactions.category, category));
+            if (date_from)
+              filters.push(gte(transactions.transactionDate, date_from));
+            if (date_to)
+              filters.push(lte(transactions.transactionDate, date_to));
+            if (transaction_type)
+              filters.push(eq(transactions.transactionType, transaction_type));
+
+            let rows = await db
+              .select()
+              .from(transactions)
+              .where(and(...filters))
+              .orderBy(desc(transactions.transactionDate))
+              .limit(50);
+
+            if (merchant_name) {
+              const lower = merchant_name.toLowerCase();
+              rows = rows.filter((r) =>
+                r.merchantName?.toLowerCase().includes(lower),
+              );
+            }
+
+            const total = rows.reduce((sum, r) => sum + Number(r.amount), 0);
+            return {
+              count: rows.length,
+              total_eur: total.toFixed(2),
+              transactions: rows.map((r) => ({
+                date: r.transactionDate,
+                merchant: r.merchantName,
+                amount: r.amount,
+                currency: r.currency,
+                category: r.category,
+                type: r.transactionType,
+              })),
+            };
+          } catch {
+            return { error: "Failed to query transactions" };
+          }
+        },
+      }),
+
+      get_net_worth: tool({
+        description:
+          "Get the user's current net worth — total EUR across all connected accounts (banks, crypto, CEX). Use when asked about net worth, total balance, or overall financial picture.",
+        inputSchema: z.object({}),
+        execute: async () => {
+          if (!userId) return { error: "Not authenticated" };
+
+          try {
+            const [snapshot] = await db
+              .select()
+              .from(netWorthSnapshots)
+              .where(eq(netWorthSnapshots.userId, userId))
+              .orderBy(desc(netWorthSnapshots.snapshotAt))
+              .limit(1);
+
+            if (!snapshot) {
+              return {
+                error:
+                  "No net worth data yet. Connect a bank account, wallet, or CEX to get started.",
+              };
+            }
+
+            return {
+              total_eur: snapshot.totalEur,
+              breakdown: snapshot.breakdownJson,
+              as_of: snapshot.snapshotAt,
+            };
+          } catch {
+            return { error: "Failed to fetch net worth" };
+          }
+        },
+      }),
+
+      get_budget_status: tool({
+        description:
+          "Get the user's budget status for the current pay cycle. Use when asked about budget, spending this month/cycle, or how much is left.",
+        inputSchema: z.object({}),
+        execute: async () => {
+          if (!userId) return { error: "Not authenticated" };
+
+          try {
+            // Calculate current pay cycle bounds (uses today's date)
+            const today = new Date();
+            const cycleStart = new Date(today);
+            const cycleEnd = new Date(today);
+            cycleStart.setDate(1);
+            cycleEnd.setMonth(cycleEnd.getMonth() + 1, 0);
+
+            const rows = await db
+              .select()
+              .from(transactions)
+              .where(
+                and(
+                  eq(transactions.userId, userId),
+                  eq(transactions.transactionType, "debit"),
+                  gte(
+                    transactions.transactionDate,
+                    cycleStart.toISOString().split("T")[0],
+                  ),
+                  lte(
+                    transactions.transactionDate,
+                    today.toISOString().split("T")[0],
+                  ),
+                ),
+              );
+
+            const spent = rows.reduce((sum, r) => sum + Number(r.amount), 0);
+
+            return {
+              cycle_start: cycleStart.toISOString().split("T")[0],
+              cycle_end: cycleEnd.toISOString().split("T")[0],
+              spent_so_far: spent.toFixed(2),
+              transaction_count: rows.length,
+            };
+          } catch {
+            return { error: "Failed to calculate budget status" };
+          }
+        },
+      }),
+
+      get_subscriptions: tool({
+        description:
+          "Get the user's active recurring subscriptions. Use when asked about subscriptions, recurring payments, or monthly costs.",
+        inputSchema: z.object({}),
+        execute: async () => {
+          if (!userId) return { error: "Not authenticated" };
+
+          try {
+            const rows = await db
+              .select()
+              .from(subscriptions)
+              .where(
+                and(
+                  eq(subscriptions.userId, userId),
+                  eq(subscriptions.status, "active"),
+                ),
+              )
+              .orderBy(desc(subscriptions.amount));
+
+            const monthlyTotal = rows
+              .filter((r) => r.frequency === "monthly")
+              .reduce((sum, r) => sum + Number(r.amount), 0);
+
+            return {
+              count: rows.length,
+              monthly_total: monthlyTotal.toFixed(2),
+              annual_total: (monthlyTotal * 12).toFixed(2),
+              subscriptions: rows.map((r) => ({
+                merchant: r.merchantName,
+                amount: r.amount,
+                currency: r.currency,
+                frequency: r.frequency,
+                next_charge: r.nextExpectedDate,
+              })),
+            };
+          } catch {
+            return { error: "Failed to fetch subscriptions" };
+          }
         },
       }),
     },

@@ -76,7 +76,7 @@ const InputBox = ({
 export function InputBar({
   onSend,
   disabled,
-  placeholder = "Reply to Huisly",
+  placeholder = "Ask Miru anything…",
   inline = false,
   onHeightChange,
 }: InputBarProps) {
@@ -136,16 +136,7 @@ export function InputBar({
   }
 
   return (
-    <div
-      ref={wrapperRef}
-      className="w-full px-4 pt-3 pb-6"
-      style={{
-        background:
-          "linear-gradient(to top, rgba(15,15,16,0.98) 60%, rgba(15,15,16,0.7) 100%)",
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
-      }}
-    >
+    <div ref={wrapperRef} className="w-full px-4 pt-3 pb-6 bg-input-bar">
       <div className="w-full max-w-2xl mx-auto">
         <InputBox
           value={value}

@@ -5,8 +5,15 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1773266159711,
-      "tag": "0000_smiling_mongoose",
+      "when": 1775995915741,
+      "tag": "0000_fluffy_enchantress",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1775995937595,
+      "tag": "0001_auth_user_trigger",
       "breakpoints": true
     }
   ]
