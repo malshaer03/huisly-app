@@ -30,6 +30,8 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { useChatStore } from "@/lib/store";
 
 /* ─── Data ────────────────────────────────────────────────────── */
 
@@ -307,6 +309,8 @@ function ChatSheet({ onClose }: { onClose: () => void }) {
 /* ─── Page ────────────────────────────────────────────────────── */
 
 export default function DashboardPage() {
+  const { user } = useAuth();
+  const { setLoginModalOpen } = useChatStore();
   const [chatOpen, setChatOpen] = useState(false);
   const [hideBalance, setHideBalance] = useState(false);
 
@@ -346,14 +350,34 @@ export default function DashboardPage() {
           <Bell size={18} />
           <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-danger border-2 border-surface" />
         </button>
-        <div className="flex items-center gap-3 px-3 py-1.5 rounded-xl bg-surface border border-white/5">
-          <div className="w-7 h-7 rounded-lg bg-accent/20 flex items-center justify-center text-xs">
-            👤
+        {user ? (
+          <div className="flex items-center gap-3 px-3 py-1.5 rounded-xl bg-surface border border-white/5">
+            <div className="w-7 h-7 rounded-lg bg-accent/20 flex items-center justify-center text-xs">
+              {user.user_metadata?.avatar_url ? (
+                <img
+                  src={user.user_metadata.avatar_url}
+                  alt={user.user_metadata?.full_name || user.email}
+                  className="w-full h-full rounded-lg object-cover"
+                />
+              ) : (
+                "👤"
+              )}
+            </div>
+            <span className="text-[13px] font-medium text-foreground">
+              {user.user_metadata?.full_name?.split(" ")[0] ||
+                user.email?.split("@")[0] ||
+                "User"}
+            </span>
           </div>
-          <span className="text-[13px] font-medium text-foreground">
-            Mohammed
-          </span>
-        </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setLoginModalOpen(true)}
+            className="px-4 py-1.5 rounded-xl bg-accent text-white text-[13px] font-semibold hover:bg-accent/90 transition-colors"
+          >
+            Sign In
+          </button>
+        )}
       </div>
 
       <div className="flex flex-col gap-0 md:gap-8">

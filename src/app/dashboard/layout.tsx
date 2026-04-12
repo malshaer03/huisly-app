@@ -1,3 +1,5 @@
+import { LoginModalController } from "@/components/auth/LoginModalController";
+import { ChatWidget } from "@/components/chat/ChatWidget";
 import { BottomNav } from "@/components/dashboard/BottomNav";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 
@@ -15,6 +17,8 @@ export default function DashboardLayout({
         </main>
         <BottomNav />
       </div>
+      <LoginModalController />
+      <ChatWidget />
     </div>
   );
 }
