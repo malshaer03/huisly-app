@@ -1045,7 +1045,22 @@ A: Automatic refresh 7 days before expiry. Users never see this.
 
 ---
 
-## 18. Next Steps
+## 18. Engineering Rules
+
+### Commit Messages
+- **Short and specific.** One line, lowercase, no period — e.g. `fix(chat): correct bubble alignment`.
+- **One logical change per commit.** Never bundle unrelated changes in a single commit.
+- **Minimal diff.** If a commit touches more than one concern (schema + UI, style + logic), split it.
+- Follow [COMMIT_CONVENTION.md](./COMMIT_CONVENTION.md) for type/scope format.
+
+### Styling
+- **Tailwind CSS v4 first.** All UI styles must be written as Tailwind utility classes.
+- **No inline `style` props** unless the value is truly dynamic at runtime (e.g. a per-item percentage width from data). Static colours, spacing, and layout must use Tailwind.
+- Design tokens (`--color-accent`, `--color-surface`, etc.) are registered in `@theme` in `globals.css` and used via `text-accent`, `bg-surface`, etc. — not hardcoded hex values in JSX.
+
+---
+
+## 19. Next Steps
 
 1. **Product:** Validate MVP with 10 EU expat users (interviews)
 2. **Engineering:** Set up Supabase schema, TrueLayer OAuth flow
