@@ -31,7 +31,7 @@ export async function POST(req: Request) {
   const modelMessages = await convertToModelMessages(messages);
 
   const result = streamText({
-    model: openai.chat("openai/gpt-oss-safeguard-20b:nitro"),
+    model: openai.chat("qwen/qwen3.6-plus"),
     system: SYSTEM_PROMPT,
     messages: modelMessages,
     stopWhen: stepCountIs(5),
