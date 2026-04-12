@@ -25,7 +25,7 @@ export function TopNav() {
         {/* Logo + Dashboard tab */}
         <div className="flex items-center gap-6">
           <Link href="/dashboard" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent to-[#a78bfa] flex items-center justify-center text-xl" />
+            <div className="w-10 h-10 rounded-xl bg-linear-to-br from-accent to-[#a78bfa] flex items-center justify-center text-xl" />
           </Link>
           <div className="flex items-center gap-1">
             {tabs.map((tab) => {
